@@ -2,9 +2,15 @@
 require("dotenv").config();
 const fs = require("fs");
 const { log } = require("../windows_10/logger");
+const path = "/swin7.txt"
 
-const runJob = async () => {
-  await log("info", "NA", "NA", "runJob", "FN CALL");
+const runJob = async (filePath) => {
+  // const smeRe = /SME\d{5}/
+  // const SME = filePath.match(smeRe);
+  await log("info", "NA", "NA", "runJob", "FN CALL", {
+   // sme: SME,
+    file: filePath
+  });
 
   const bigGroupRe =
     /(?<big_group>Source.*\r\nDomain:.*\r\nType:.*\r\nID:.*\r\nDate:.*\r\nText:.*)\n?/g;
@@ -13,7 +19,7 @@ const runJob = async () => {
     /(?<source_group>Source.*)\r\n(?<domain_group>Domain:.*)\r\n(?<type_group>Type:.*)\r\n(?<id_group>ID:.*)\r\n(Date:.*\s(?<month>\w+)\s(?<day>\d+),\s(?<year>\d+),\s(?<time>.*))\r\n(?<text_group>Text:.*)\n?/;
 
   try {
-   fs.readFile("swin7.txt", "utf8", function (err, data) {
+   fs.readFile(filePath, "utf8", function (err, data) {
       let matches = data.matchAll(bigGroupRe);
       let matchesArray = [...matches];
 
