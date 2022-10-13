@@ -1,6 +1,6 @@
 const { log } = require("../logger");
 
-function testTabs(matches, SME, count) {
+async function testTabs(matches, SME, count) {
   const tabRe = /\t/g;
   if (
     tabRe.test(matches.groups.host_col_1) ||
@@ -14,6 +14,19 @@ function testTabs(matches, SME, count) {
   }
 }
 
+function getSME(filePath) {
+  const smeRe = /SME\d{5}/;
+  return filePath.match(smeRe);
+}
+
+async function testModality(line) {
+  let re = /.*\t.*\t.*\t(?<modality>(.*))_/;
+  //console.log(line.match(re).groups.modality)
+  return line.match(re).groups.modality;
+}
+
 module.exports = {
   testTabs,
+  getSME,
+  testModality,
 };
