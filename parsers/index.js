@@ -4,7 +4,6 @@ const { log } = require("./logger");
 //const parse_win_7 = require("./jobs/windows_7");
 const parse_win_10 = require("./jobs/windows_10");
 
-//path="win_7.txt"
 const path = "/opt/hhm-files/C0137/SHIP009/SME00811/EvtApplication_Today.txt";
 
 const runJob = async (filePath) => {
@@ -29,6 +28,3 @@ const onBoot = async (filePath) => {
 };
 
 onBoot(path);
-
-// const smeRe = /SME\d{5}/
-// const SME = filePath.match(smeRe);
