@@ -2,11 +2,13 @@
 require("dotenv").config({ path: "../../.env" });
 const fs = require("fs");
 const readline = require("readline");
-const pgPool = require("../db/pg-pool");
 const { log } = require("../logger");
 const { testTabs, getSME, testModality } = require("../utils/regExTests");
+const bulkInsert = require("../utils/queryBuilder");
 
 const parse_win_10 = async (filePath) => {
+ 
+  const data = [];
   const SME = getSME(filePath);
 
   await log("info", "NA", `${SME}`, "parse_win_10", "FN CALL", {
@@ -23,9 +25,10 @@ const parse_win_10 = async (filePath) => {
       input: fs.createReadStream(filePath),
       crlfDelay: Infinity,
     });
-    
-    let modality; 
+
+    let modality;
     for await (const line of rl) {
+      let row = [];
       // Get modality from first line
       if (count === 1) {
         modality = (await testModality(line)).toLowerCase();
@@ -36,7 +39,19 @@ const parse_win_10 = async (filePath) => {
       // Test for tabs
       await testTabs(matches, SME, count);
 
-      await pgPool.query(
+      row.push(
+        SME[0],
+        matches.groups.host_state,
+        matches.groups.host_date,
+        matches.groups.host_time,
+        matches.groups.host_col_1,
+        matches.groups.host_col_2,
+        matches.groups.host_info
+      );
+
+      data.push(row);
+
+      /* await pgPool.query(
         `INSERT INTO ${modality}(equipment_id, host_state, host_date, host_time, host_col_1, host_col_2, host_info) VALUES($1, $2, $3, $4, $5, $6, $7)`,
         [
           SME[0],
@@ -47,7 +62,7 @@ const parse_win_10 = async (filePath) => {
           matches.groups.host_col_2,
           matches.groups.host_info,
         ]
-      );
+      ); */
 
       await log("info", "NA", `${SME}`, "parse_win_10", "readline", {
         host_state: matches.groups.host_state,
@@ -59,6 +74,8 @@ const parse_win_10 = async (filePath) => {
       });
       count++;
     }
+    await bulkInsert(data, modality);
+    
   } catch (error) {
     await log("error", "NA", `${SME}`, "parse_win_10", "FN CATCH", {
       error: error,
