@@ -20,7 +20,7 @@ function getSME(filePath) {
 }
 
 async function testModality(line) {
-  let re = /.*\t.*\t.*\t(?<modality>(.*))_/;
+  let re = /.*\t.*\t.*\t(?<modality>(\w+))_/;
   //console.log(line.match(re).groups.modality)
   return line.match(re).groups.modality;
 }
