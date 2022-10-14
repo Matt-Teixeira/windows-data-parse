@@ -19,7 +19,6 @@ const parse_win_10 = async (filePath) => {
     /(?<host_state>\w+)\t(?<host_date>\d{4}-\d{1,2}-\d{1,2})\t(?<host_time>\d{2}:\d{2}:\d{2})\t(?<host_col_1>(.*?(\d+)?)(\.\d\.\d)?)\t?\s?(?<host_col_2>(\d{1,5}))\t(?<host_info>.*)/;
 
   try {
-    let count = 1;
     const rl = readline.createInterface({
       input: fs.createReadStream(filePath),
       crlfDelay: Infinity,
@@ -58,17 +57,21 @@ const parse_win_10 = async (filePath) => {
         host_col_2: matches.groups.host_col_2,
         host_info: matches.groups.host_info,
       });
-      count++;
     }
-    await bulkInsert(data, modality, [
-      "equipment_id",
-      "host_state",
-      "host_date",
-      "host_time",
-      "host_col_1",
-      "host_col_2",
-      "host_info",
-    ]);
+    await bulkInsert(
+      data,
+      modality,
+      [
+        "equipment_id",
+        "host_state",
+        "host_date",
+        "host_time",
+        "host_col_1",
+        "host_col_2",
+        "host_info",
+      ],
+      filePath
+    );
   } catch (error) {
     await log("error", "NA", `${SME}`, "parse_win_10", "FN CATCH", {
       error: error,
