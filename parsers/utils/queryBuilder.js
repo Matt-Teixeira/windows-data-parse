@@ -1,6 +1,7 @@
 const pgPool = require("../db/pg-pool");
+const { log } = require("../logger");
 
-async function bulkInsert(data, modality, columns) {
+async function bulkInsert(data, modality, columns, file) {
   try {
     let groupArray = [];
 
@@ -22,6 +23,9 @@ async function bulkInsert(data, modality, columns) {
     await pgPool.query(query);
   } catch (error) {
     console.log(error);
+    await log("ERROR", "NA", "NA", "bulkInsert", `FN CALL`, {
+      file: file,
+    });
   }
 }
 
