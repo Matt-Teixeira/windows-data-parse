@@ -1,6 +1,6 @@
 const pgPool = require("../db/pg-pool");
 
-async function bulkInsert(data, modality) {
+async function bulkInsert(data, modality, columns) {
   try {
     let groupArray = [];
 
@@ -14,7 +14,7 @@ async function bulkInsert(data, modality) {
     }
 
     const query = `
-  INSERT INTO ${modality}(equipment_id, host_state, host_date, host_time, host_col_1, host_col_2, host_info)
+  INSERT INTO ${modality}(${[...columns]})
   VALUES
   ${[...groupArray]}
   `;

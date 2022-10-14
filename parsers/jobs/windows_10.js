@@ -7,7 +7,6 @@ const { testTabs, getSME, testModality } = require("../utils/regExTests");
 const bulkInsert = require("../utils/queryBuilder");
 
 const parse_win_10 = async (filePath) => {
- 
   const data = [];
   const SME = getSME(filePath);
 
@@ -51,19 +50,6 @@ const parse_win_10 = async (filePath) => {
 
       data.push(row);
 
-      /* await pgPool.query(
-        `INSERT INTO ${modality}(equipment_id, host_state, host_date, host_time, host_col_1, host_col_2, host_info) VALUES($1, $2, $3, $4, $5, $6, $7)`,
-        [
-          SME[0],
-          matches.groups.host_state,
-          matches.groups.host_date,
-          matches.groups.host_time,
-          matches.groups.host_col_1,
-          matches.groups.host_col_2,
-          matches.groups.host_info,
-        ]
-      ); */
-
       await log("info", "NA", `${SME}`, "parse_win_10", "readline", {
         host_state: matches.groups.host_state,
         host_date: matches.groups.host_date,
@@ -74,8 +60,15 @@ const parse_win_10 = async (filePath) => {
       });
       count++;
     }
-    await bulkInsert(data, modality);
-    
+    await bulkInsert(data, modality, [
+      "equipment_id",
+      "host_state",
+      "host_date",
+      "host_time",
+      "host_col_1",
+      "host_col_2",
+      "host_info",
+    ]);
   } catch (error) {
     await log("error", "NA", `${SME}`, "parse_win_10", "FN CATCH", {
       error: error,
