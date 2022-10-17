@@ -16,8 +16,10 @@ const parse_win_10 = async (filePath) => {
   });
 
   const re =
-    /(?<host_state>\w+)\t(?<host_date>\d{4}-\d{1,2}-\d{1,2})\t(?<host_time>\d{2}:\d{2}:\d{2})\t(?<host_col_1>(.*?(\d+)?)(\.\d\.\d)?)\t?\s?(?<host_col_2>(\d{1,5}))\t(?<host_info>.*)/;
+    /(?<host_state>\w+)\t(?<host_date>\d{4}-\d{1,2}-\d{1,2})\t(?<host_time>\d{2}:\d{2}:\d{2})\t(?<source_group>(.*?(\d+)?)(\.\d\.\d)?)\t?\s?(?<type_group>(\d{1,5}))\t(?<text_group>.*)/;
 
+  let count = 1;
+    
   try {
     const rl = readline.createInterface({
       input: fs.createReadStream(filePath),
@@ -42,9 +44,9 @@ const parse_win_10 = async (filePath) => {
         matches.groups.host_state,
         matches.groups.host_date,
         matches.groups.host_time,
-        matches.groups.host_col_1,
-        matches.groups.host_col_2,
-        matches.groups.host_info
+        matches.groups.source_group,
+        matches.groups.type_group,
+        matches.groups.text_group
       );
 
       data.push(row);
@@ -53,10 +55,11 @@ const parse_win_10 = async (filePath) => {
         host_state: matches.groups.host_state,
         host_date: matches.groups.host_date,
         host_time: matches.groups.host_time,
-        host_col_1: matches.groups.host_col_1,
-        host_col_2: matches.groups.host_col_2,
-        host_info: matches.groups.host_info,
+        source_group: matches.groups.source_group,
+        type_group: matches.groups.type_group,
+        text_group: matches.groups.text_group,
       });
+      count++
     }
     await bulkInsert(
       data,
@@ -66,9 +69,9 @@ const parse_win_10 = async (filePath) => {
         "host_state",
         "host_date",
         "host_time",
-        "host_col_1",
-        "host_col_2",
-        "host_info",
+        "source_group",
+        "type_group",
+        "text_group",
       ],
       filePath
     );
