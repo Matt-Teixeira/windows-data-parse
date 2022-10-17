@@ -22,8 +22,7 @@ async function bulkInsert(data, modality, columns, file) {
 
     await pgPool.query(query);
   } catch (error) {
-    console.log(error);
-    await log("ERROR", "NA", "NA", "bulkInsert", `FN CALL`, {
+    await log("error", "NA", "NA", "bulkInsert", `FN CALL`, {
       file: file,
     });
   }
