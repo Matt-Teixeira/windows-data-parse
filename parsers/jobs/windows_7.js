@@ -2,13 +2,16 @@
 require("dotenv").config({ path: "../../.env" });
 const fs = require("node:fs").promises;
 const { log } = require("../logger");
-const { getSME, testModality } = require("../utils/regExTests");
+const { get_sme_modality } = require("../utils/regExTests");
 const bulkInsert = require("../utils/queryBuilder");
 const convertDates = require("../utils/dates");
 
 const parse_win_7 = async (filePath) => {
   const data = [];
-  const SME = getSME(filePath);
+  const sme_modality = get_sme_modality(filePath);
+  const SME = sme_modality.groups.sme;
+  const modality = sme_modality.groups.modality;
+
   try {
     await log("info", "NA", "NA", "parse_win_7", "FN CALL", {
       sme: SME,
@@ -21,14 +24,11 @@ const parse_win_7 = async (filePath) => {
     const smallGroupRe =
       /Source:(?<source_group>.*)[\r\n]Domain:(?<domain_group>.*)[\r\n]Type:(?<type_group>.*)[\r\n]ID:(?<id_group>.*)[\r\n](Date:.*\s(?<month>\w+)\s(?<day>\d+),\s(?<year>\d+),\s(?<time>.*))[\r\n]Text:(?<text_group>.*)\n?/;
 
-    let count = 1;
-
     const fileData = (await fs.readFile(filePath)).toString();
 
     let matches = fileData.matchAll(bigGroupRe);
     let matchesArray = [...matches];
 
-    let modality;
     for await (let match of matchesArray) {
       let row = [];
 
@@ -36,15 +36,8 @@ const parse_win_7 = async (filePath) => {
 
       convertDates(matchGroups.groups);
 
-      // Get modality from first line
-      if (count === 1) {
-        modality = (
-          await testModality(matchGroups.groups.source_group)
-        ).toLowerCase();
-      }
-
       row.push(
-        SME[0],
+        SME,
         matchGroups.groups.source_group,
         matchGroups.groups.host_date,
         matchGroups.groups.time,
@@ -65,8 +58,6 @@ const parse_win_7 = async (filePath) => {
         year: matchGroups.groups.year,
         text_group: matchGroups.groups.text_group,
       });
-
-      count++;
     }
     await bulkInsert(
       data,
