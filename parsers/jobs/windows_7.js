@@ -3,6 +3,7 @@ require("dotenv").config({ path: "../../.env" });
 const fs = require("node:fs").promises;
 const { log } = require("../logger");
 const { get_sme_modality } = require("../utils/regExTests");
+const { win_7_re } = require("../utils/regEx");
 const bulkInsert = require("../utils/queryBuilder");
 const convertDates = require("../utils/dates");
 
@@ -18,21 +19,15 @@ const parse_win_7 = async (filePath) => {
       file: filePath,
     });
 
-    const bigGroupRe =
-      /(?<big_group>Source.*[\r\n]Domain:.*[\r\n]Type:.*[\r\n]ID:.*[\r\n]Date:.*[\r\n]Text:.*)\n?/g;
-
-    const smallGroupRe =
-      /Source:(?<source_group>.*)[\r\n]Domain:(?<domain_group>.*)[\r\n]Type:(?<type_group>.*)[\r\n]ID:(?<id_group>.*)[\r\n](Date:.*\s(?<month>\w+)\s(?<day>\d+),\s(?<year>\d+),\s(?<time>.*))[\r\n]Text:(?<text_group>.*)\n?/;
-
     const fileData = (await fs.readFile(filePath)).toString();
 
-    let matches = fileData.matchAll(bigGroupRe);
+    let matches = fileData.matchAll(win_7_re.big_group);
     let matchesArray = [...matches];
 
     for await (let match of matchesArray) {
       let row = [];
 
-      let matchGroups = match.groups.big_group.match(smallGroupRe);
+      let matchGroups = match.groups.big_group.match(win_7_re.small_group);
 
       convertDates(matchGroups.groups);
 

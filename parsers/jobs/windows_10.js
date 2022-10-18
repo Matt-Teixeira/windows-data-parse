@@ -4,6 +4,7 @@ const fs = require("fs");
 const readline = require("readline");
 const { log } = require("../logger");
 const { testTabs, get_sme_modality } = require("../utils/regExTests");
+const { win_10_re } = require("../utils/regEx");
 const bulkInsert = require("../utils/queryBuilder");
 
 const parse_win_10 = async (filePath) => {
@@ -19,9 +20,6 @@ const parse_win_10 = async (filePath) => {
     file: filePath,
   });
 
-  const re =
-    /(?<host_state>\w+)\t(?<host_date>\d{4}-\d{1,2}-\d{1,2})\t(?<host_time>\d{2}:\d{2}:\d{2})\t(?<source_group>(.*?(\d+)?)(\.\d\.\d)?)\t?\s?(?<type_group>(\d{1,5}))\t(?<text_group>.*)/;
-
   try {
     const rl = readline.createInterface({
       input: fs.createReadStream(filePath),
@@ -32,7 +30,7 @@ const parse_win_10 = async (filePath) => {
       // Row will contain capture groups from line and push to data array.
       let row = [];
 
-      let matches = line.match(re);
+      let matches = line.match(win_10_re.re_v1);
 
       // Test for tabs
       await testTabs(matches, SME);

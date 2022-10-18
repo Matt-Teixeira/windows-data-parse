@@ -8,7 +8,8 @@ const parse_win_10 = require("./jobs/windows_10");
 // /opt/hhm-files/C0137/SHIP009/SME00812/EvtApplication_Today.txt
 //const path = "/opt/hhm-files/C0137/SHIP009/SME01107/EvtApplication_Today.txt";
 
-const newPath = "/opt/mirror/C0137/SHIP009/SME01112/MRI/EvtApplication_Today.txt"
+const newPath =
+  "/opt/mirror/C0137/SHIP009/SME01112/MRI/EvtApplication_Today.txt";
 //const newPath = "/opt/mirror/C0137/SHIP009/SME00811/CT/EvtApplication_Today.txt"
 
 const win_7_path = "SME00001_CT.txt";
@@ -16,13 +17,13 @@ const win_7_path = "SME00001_CT.txt";
 const runJob = async (filePath) => {
   await log("info", "NA", "NA", "runJob", "FN CALL", {
     // sme: SME,
-    
+
     file: filePath,
   });
 
   try {
     const parsed_data = await parse_win_10(filePath);
-    console.log(parsed_data)
+    console.log(parsed_data);
     if (!parsed_data) {
       await parse_win_7(filePath);
     }
@@ -44,4 +45,4 @@ const onBoot = async (filePath) => {
   }
 };
 
-onBoot(win_7_path);
+onBoot(newPath);
