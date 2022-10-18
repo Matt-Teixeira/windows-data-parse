@@ -27,8 +27,6 @@ CREATE TABLE ct(
     id_group INT
 );
 
-
-
 CREATE TABLE mri(
     id BIGSERIAL PRIMARY KEY,
     equipment_id VARCHAR(10),
