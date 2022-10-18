@@ -14,22 +14,12 @@ async function testTabs(matches, SME, count) {
   }
 }
 
-function getSME(filePath) {
-  const smeRe = /SME\d{5}/;
+function get_sme_modality(filePath) {
+  const smeRe = /(?<sme>SME\d{5})[\/_](?<modality>[A-Z]+)/;
   return filePath.match(smeRe);
-}
-
-async function testModality(line) {
-  let modalityRe = /.*\t.*\t.*\t(?<modality>(\w+))_/;
-  if (line.match(modalityRe) === null) {
-    modalityRe = /(?<modality>[A-Z]+)_/
-    return line.match(modalityRe).groups.modality
-  }
-  return line.match(modalityRe).groups.modality;
 }
 
 module.exports = {
   testTabs,
-  getSME,
-  testModality,
+  get_sme_modality,
 };
