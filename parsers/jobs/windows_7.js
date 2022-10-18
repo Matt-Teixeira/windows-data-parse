@@ -10,20 +10,19 @@ const parse_win_7 = async (filePath) => {
   const data = [];
   const SME = getSME(filePath);
   try {
-  await log("info", "NA", "NA", "parse_win_7", "FN CALL", {
-    sme: SME,
-    file: filePath,
-  });
+    await log("info", "NA", "NA", "parse_win_7", "FN CALL", {
+      sme: SME,
+      file: filePath,
+    });
 
-  const bigGroupRe =
-    /(?<big_group>Source.*[\r\n]Domain:.*[\r\n]Type:.*[\r\n]ID:.*[\r\n]Date:.*[\r\n]Text:.*)\n?/g;
+    const bigGroupRe =
+      /(?<big_group>Source.*[\r\n]Domain:.*[\r\n]Type:.*[\r\n]ID:.*[\r\n]Date:.*[\r\n]Text:.*)\n?/g;
 
-  const smallGroupRe =
-    /Source:(?<source_group>.*)[\r\n]Domain:(?<domain_group>.*)[\r\n]Type:(?<type_group>.*)[\r\n]ID:(?<id_group>.*)[\r\n](Date:.*\s(?<month>\w+)\s(?<day>\d+),\s(?<year>\d+),\s(?<time>.*))[\r\n]Text:(?<text_group>.*)\n?/;
+    const smallGroupRe =
+      /Source:(?<source_group>.*)[\r\n]Domain:(?<domain_group>.*)[\r\n]Type:(?<type_group>.*)[\r\n]ID:(?<id_group>.*)[\r\n](Date:.*\s(?<month>\w+)\s(?<day>\d+),\s(?<year>\d+),\s(?<time>.*))[\r\n]Text:(?<text_group>.*)\n?/;
 
-  let count = 1;
+    let count = 1;
 
-  
     const fileData = (await fs.readFile(filePath)).toString();
 
     let matches = fileData.matchAll(bigGroupRe);
@@ -56,7 +55,7 @@ const parse_win_7 = async (filePath) => {
       );
       data.push(row);
 
-      /*  await log("info", "NA", `${SME}`, "readFile", "FN CALL", {
+      await log("info", "NA", `${SME}`, "readFile", "FN CALL", {
         source_group: matchGroups.groups.source_group,
         domain_group: matchGroups.groups.domain_group,
         type_group: matchGroups.groups.type_group,
@@ -65,7 +64,7 @@ const parse_win_7 = async (filePath) => {
         day: matchGroups.groups.day,
         year: matchGroups.groups.year,
         text_group: matchGroups.groups.text_group,
-      }); */
+      });
 
       count++;
     }

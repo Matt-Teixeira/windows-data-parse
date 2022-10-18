@@ -75,6 +75,7 @@ const parse_win_10 = async (filePath) => {
       ],
       filePath
     );
+    return true
   } catch (error) {
     await log("error", "NA", `${SME}`, "parse_win_10", "FN CATCH", {
       error: error,
