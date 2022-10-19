@@ -12,7 +12,7 @@ const newPath =
   "/opt/mirror/C0137/SHIP009/SME01112/MRI/EvtApplication_Today.txt";
 //const newPath = "/opt/mirror/C0137/SHIP009/SME00811/CT/EvtApplication_Today.txt"
 
-const win_7_path = "SME00001_CT.txt";
+const oldPath = "SME00001_CT.txt";
 
 const runJob = async (filePath) => {
   await log("info", "NA", "NA", "runJob", "FN CALL", {
